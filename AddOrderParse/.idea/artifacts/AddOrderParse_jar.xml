@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact name="AddOrderParse:jar">
+    <output-path>$PROJECT_DIR$/../../AddOrderParse_jar</output-path>
+    <root id="root">
+      <element id="archive" name="AddOrderParse.jar">
+        <element id="module-output" name="AddOrderParse" />
+      </element>
+      <element id="directory" name="libs">
+        <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/lib/commons-beanutils-1.9.3.jar" />
+        <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/lib/commons-logging-1.2.jar" />
+        <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/lib/commons-net-1.4.1.jar" />
+        <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/lib/dom4j-1.6.1.jar" />
+        <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/lib/itcast-tools-1.4.jar" />
+        <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/lib/log4j-1.2.16.jar" />
+        <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/lib/mybatis-3.1.1.jar" />
+        <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/lib/sqljdbc42.jar" />
+      </element>
+    </root>
+  </artifact>
+</component>

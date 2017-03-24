@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.add.mapper.ReceiptMapper">
+
+    <select id="checkIsExist" parameterType="java.lang.String" resultType="Receipt">
+        SELECT * FROM add_receipt WHERE orderNo=#{value};
+    </select>
+
+    <insert id="add" parameterType="com.add.bean.Receipt">
+        INSERT INTO [dbo].[add_receipt] VALUES (#{guid},#{ebpCode},#{ebcCode},#{orderNo},#{returnStatus},#{returnTime},#{returnInfo},#{uploadTime});
+    </insert>
+
+    <update id="update" parameterType="Receipt">
+        UPDATE add_receipt SET returnStatus=#{returnStatus},returnTime=#{returnTime},returnInfo=#{returnInfo,#{uploadTime}} WHERE orderNo=#{orderNo};
+    </update>
+
+</mapper>
