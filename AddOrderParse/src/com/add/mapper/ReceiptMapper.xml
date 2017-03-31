@@ -5,16 +5,28 @@
 
 <mapper namespace="com.add.mapper.ReceiptMapper">
 
-    <select id="checkIsExist" parameterType="java.lang.String" resultType="Receipt">
-        SELECT * FROM add_receipt WHERE orderNo=#{value};
+    <select id="checkIsExist" parameterType="Receipt" resultType="java.lang.String">
+        SELECT returnTime FROM add_latestReceipt WHERE orderNo=#{orderNo};
     </select>
 
-    <insert id="add" parameterType="com.add.bean.Receipt">
-        INSERT INTO [dbo].[add_receipt] VALUES (#{guid},#{ebpCode},#{ebcCode},#{orderNo},#{returnStatus},#{returnTime},#{returnInfo},#{uploadTime});
+    <select id="getBatchNo" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT batchNo FROM add_order WHERE orderNo=#{value};
+    </select>
+
+    <insert id="addLatest" parameterType="Receipt">
+        INSERT INTO add_latestReceipt VALUES
+        (NULL,#{batchNo},#{orderNo},#{returnStatus},#{returnTime},#{returnInfo},#{uploadTime});
     </insert>
 
-    <update id="update" parameterType="Receipt">
-        UPDATE add_receipt SET returnStatus=#{returnStatus},returnTime=#{returnTime},returnInfo=#{returnInfo,#{uploadTime}} WHERE orderNo=#{orderNo};
+    <update id="updateLatest" parameterType="Receipt">
+        UPDATE add_latestReceipt SET returnStatus=#{returnStatus},returnTime=#{returnTime},returnInfo=#{returnInfo},uploadTime=#{uploadTime} WHERE orderNo=#{orderNo};
     </update>
+
+    <insert id="add" parameterType="java.util.ArrayList">
+        INSERT INTO add_receipt VALUES
+        <foreach item="item" index="key" collection="list"
+                 open="" separator="," close="">(#{item.receiptId},#{item.guid},#{item.ebpCode},#{item.ebcCode},#{item.orderNo},#{item.returnStatus},#{item.returnTime},#{item.returnInfo},#{item.uploadTime})</foreach>;
+    </insert>
+
 
 </mapper>

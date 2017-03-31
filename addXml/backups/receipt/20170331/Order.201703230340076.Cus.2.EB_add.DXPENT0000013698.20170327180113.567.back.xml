@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReturnMessage> 
+		<MessageHead> 
+				<messageFrom>Cus</messageFrom>  
+				<messageFunc>Order</messageFunc>  
+				<messageTime>2017-03-27 18:01:13</messageTime> 
+		</MessageHead>  
+		<OrderReturn> 
+				<guid>11119E5E-7AB6-42E5-B5D2-EFDDB24DB3CC</guid>  
+				<ebpCode>350246049Y</ebpCode>  
+				<ebcCode>350246049Y</ebcCode>  
+				<orderNo>201703230340076</orderNo>  
+				<returnStatus>2</returnStatus>  
+				<returnTime>20170327175827</returnTime>  
+				<returnInfo>订单新增申报成功[06E61186-2D6B-4657-8EE8-B34343080CAF]</returnInfo> 
+		</OrderReturn> 
+</ReturnMessage>

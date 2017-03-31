@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReturnMessage> 
+		<MessageHead> 
+				<messageFrom>Ciq</messageFrom>  
+				<messageFunc>Order</messageFunc>  
+				<messageTime>2017-03-27 18:03:00</messageTime> 
+		</MessageHead>  
+		<OrderReturn> 
+				<guid>DF98D189-A300-4B09-950A-12DBD7ECC2FA</guid>  
+				<ebpCode>350246049Y</ebpCode>  
+				<ebcCode>350246049Y</ebcCode>  
+				<orderNo>201703230340085</orderNo>  
+				<returnStatus>1</returnStatus>  
+				<returnTime>20170327181824</returnTime>  
+				<returnInfo>数据已正常接收。</returnInfo> 
+		</OrderReturn> 
+</ReturnMessage>

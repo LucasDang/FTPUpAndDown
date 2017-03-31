@@ -38,7 +38,9 @@ public class FtpUtils {
      */
 
     public static ResourceBundle getFtpResource(){
-        String proFilePath = System.getProperty("user.dir") +"/ftpConfig/ftp.properties";
+        //String proFilePath = System.getProperty("user.dir") +"/ftpConfig/ftp.properties";
+        String proFilePath = "/Users/kuajing/Desktop/FTPUpAndDown/ftpConfig/ftp.properties";
+        //System.out.println(proFilePath);
         BufferedInputStream inputStream;
         ResourceBundle rs = null;
 
@@ -68,7 +70,7 @@ public class FtpUtils {
     public static FTPClient getFTPClient() {
         FTPClient ftpClient = null;
         try {
-            System.out.println("host:"+ftpHost+","+"port:"+ftpPort+","+"name:"+ftpUserName+","+"pwd:"+ftpPassword);
+            //System.out.println("host:"+ftpHost+","+"port:"+ftpPort+","+"name:"+ftpUserName+","+"pwd:"+ftpPassword);
             ftpClient = new FTPClient();
             ftpClient.connect(ftpHost, ftpPort);// 连接FTP服务器
             ftpClient.login(ftpUserName, ftpPassword);// 登陆FTP服务器
@@ -81,7 +83,7 @@ public class FtpUtils {
                 ftpClient.disconnect();
             } else {
                 //连接成功
-                System.out.println("连接ftp成功1");
+                //System.out.println("连接ftp成功1");
             }
         } catch (SocketException e) {
             //System.out.println("222");

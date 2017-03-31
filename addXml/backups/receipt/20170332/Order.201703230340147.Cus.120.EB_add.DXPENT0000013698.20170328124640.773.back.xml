@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReturnMessage> 
+		<MessageHead> 
+				<messageFrom>Cus</messageFrom>  
+				<messageFunc>Order</messageFunc>  
+				<messageTime>2017-03-28 12:46:40</messageTime> 
+		</MessageHead>  
+		<OrderReturn> 
+				<guid>556C3A4F-EBB7-4AFF-887A-F5FC72AF471F</guid>  
+				<ebpCode>350246049Y</ebpCode>  
+				<ebcCode>350246049Y</ebcCode>  
+				<orderNo>201703230340147</orderNo>  
+				<returnStatus>120</returnStatus>  
+				<returnTime>20170328124318</returnTime>  
+				<returnInfo>[Code:1800;Desc:逻辑校验通过]</returnInfo> 
+		</OrderReturn> 
+</ReturnMessage>

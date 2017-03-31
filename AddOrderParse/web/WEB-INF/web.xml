@@ -7,4 +7,8 @@
         <servlet-name>RootServlet</servlet-name>
         <servlet-class>com.add.servlet.RootServlet</servlet-class>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>RootServlet</servlet-name>
+        <url-pattern>/main</url-pattern>
+    </servlet-mapping>
 </web-app>

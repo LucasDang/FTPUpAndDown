@@ -1,145 +1,142 @@
-##FTP文件上传及回执文件下载并解析
-
+##FTP文件上传及回执文件下载项目优化
 
 ###功能简介：
 	操作1：将本地的订单xml文件上传到FTP上，然后在本地其他文件夹进行备
 	份并删除源文件。
-	操作2：将FTP上面其他公司上传的订单回执Xml下载下来然后删除，并将文
-	件解析存到数据中。
+	操作2：将FTP上面其他公司上传的订单回执Xml下载到temp文件夹（限制数
+	量为300，超过300则下个循环再下载。此举防止一个周期时间过长，产生中
+	断。） ——> 解析并存储到数据库中 ——> 将temp中的文件转移到备份文件
+	夹中并根据时间存储到相对应的文件夹中。
+
+
+###优化部分：
+
+- **优化1**
+
+**上次的项目流程是：为每个任务创建线程 ——> 线程里面创建定时器 ——> 
+	完成任务。**	
+
+我觉得我敢我上次的代码上传到github上也是胆子大，幸好github没有fans，不然被人笑掉大牙了。。。
+
+我本来是想继续优化做成可视化，可人工控制的。结果按照我之前的那样压根控制不了，关闭线程，定时器还在继续任务。关闭定时器，线程又不会被关闭。哎，什么都不了解就乱写。。。
+
+**定时器本身开启之后就是创建一个线程的**，在这个线程里面完成任务。所以再开启一个线程里面创建定时器完全是多此一举！在这里我换了个思路来写。
+
+	现在的项目流程：开启第一个任务在主线程中直接run ——> 开启一个分线程
+	来完成第二个任务
 	
-###操作流程：
-
--  **使用说明**
-
-	***双击文件夹下的exe的执行文件，程序就自动运行。关闭则需要启动任务管理器结束一下进程即可。***
+代码如下：
 	
- ****
- 
-- **注意事项**
+	/**
+     * 开启任务
+     * @param task 任务对应标识
+     */
+    private void startTimerTask(String task){
 
-  **使用前需要在ftpConfig文件夹下的配置文件中配置好上传和下载的路径，否则程序会报找不到路径的错误！**
-
- ****
-
--  **目录说明**
-
- 1. **AddOrderParse.jar** ——> java代码(已安装java环境的电脑上级即可执行程序)
-  
- 2. **libs** ——> java程序所使用的依赖库，勿操作此文件夹。
- 
- 3. **ftpConfig** ——> 此文件夹下放置配置ftp的地址，用户名和密码。且还有相对应的ftp上的文件路径以及本地的文件路径，均可再次配置。-----
-***注意：需要确保配置的路径均是真实的，否则会报错！并且最后一个文件夹后需要加上/***
- 
- 4. **log** ——> 此文件放置程序执行错误的日志信息。
- 
- 5. **addXml** ——> 此文件为我调试用的本地的文件路径，你可以自行在ftpConfig配置。
-
- 6. **jre** ——> 此文件夹存放的是java的运行环境，这样即使电脑没有安装java环境，也可以执行java的程序。不过有点大，待优化。
-
-  ****
- 
-- **具体流程**
-
-	*开启了一个定时器并开辟了两个线程，分别用来循环执行上传和下载两个任务。循环时间设置为60s。*
- 	
-	1. **上传订单文件：** 循环扫描本地上的orderXml存放路径，有则上传至ftp上，并在本地备份此文件。
-	
-	2. **下载回执文件：** 循环扫描ftp上的回执文件存放路径，有则下载至本地，**按照日期创建文件夹存放文件**，所以同一天的文件会放在一个文件夹下 。然后将下载的文件进行解析添加至数据库的表**add_receipt**中，字段与xml主题字体一致，并多了一个记录添加时间的字段。**由于暂不知道筛选条件，所以目前的做法只是将所有的回执文件解析成对象并添加**，所以数据库中会出现同一订单的多个状态。
-
-	****
-	
-- **待优化**
-
- 1. 还需新增定时删除过期文件夹的功能。
- 2. 回执文件没有筛选直接添加至数据库中，需要根据条件来更新过期的状态。
- 3. 日志记录还不完善。
- 4. 需要转成C/S项目，实现可视化操作。
- 
-****
-
-**以上是写给公司操作人员的操作手册**
-
-****
-
-****
-
-
-
-***一点感想：***
-
-从老大让我做这个东西到现在大概过了将近半个月的时间吧，其实程序不难，关键是前期的需求不明确，老大也是惜字如金！再加上我也只是刚学java，学我的mybatis学的开开心的，把我抓过来弄这个，不过也是挺感谢他的。**代码这东西还是需要实战的，光自己弄真的不行**，感觉我这半个月了解的小知识比过去一个月看的东西掌握的还多。特别是最后需要打包成jar文件还需要转成exe的可执行文件并且需要将jre环境也一起打包来让没有安装java环境的电脑用真的愁死我了，啥都不了解！**原理不了解，做起东西来真的事倍功半啊！！！**
-
-****
-
-###以上内容写于22号，你敢信第二天给同事用立马就出错了么！！！
-
-真的无语.......
-
-因为一个路径的问题导致我弄了两天，特别我用的mac，不知道怎么连接他们加密的vpn，每次mac写完代码然后打成jar包放到win下的电脑使用，然后一次次报错。特别本来一个小时就能弄好的问题，耽误了两天！
-
-****
-
-###代码简介：
-
-- **项目目录简介：**
-
-
-![工程目录](http://olgfh4099.bkt.clouddn.com/Snip20170324_10.png)
-
-
-1. **bean层放的是bean对象。**
-
-2. **main是含有main方法的一个主体类。**
-
- - ThreadUtils主要是开辟两个分线程分别用来执行上传和下载两个进程，通过输出看到两个线程的资源的确不是平均的，而且也只是一个进程切换来切换去的。
-
- - TimerTaskUtils是用来开启定时器，没60s执行一次任务。
-
-3. **mapper 和 mapperImp 这两个是mybatis做数据持久层的实现。**
-
-4. **service是上传和下载的具体业务逻辑实现类。**
-
-5. **utils是一系列的工具类，由上而下分别是：文件夹操作类、封装了FTP常用方法的工具类、将一个map映射成一个对象的类、mybatis工厂的获取类、XMl文件解析的工具**
-
- - map映射成对象的类是看别人博客里面的项目所使用的工具类，直接复制的。。。（侵删！！！）
-
-
-###代码中需要注意的地方
-
- - **FTP连接**
- 	
-		if (task.equals("orderXmlUpload")){
-            //订单xml上传
-            System.out.println("查找订单文件" + new Date().toString());
-            OrderInfoDeal.orderXmlUpload();
-            FtpUtils.closeFtpClient(FtpUtils.getFTPClient());
-        }else if(task.equals("receiptXmlDownload")){
-            //回执xml下载
-            System.out.println("查找回执文件" + new Date().toString());
-            ReceiptDeal receiptDeal = new ReceiptDeal();
-            receiptDeal.receiptXmlDownload();
-            FtpUtils.closeFtpClient(FtpUtils.getFTPClient());
-        }
+        ThreadUtils orderThread = ThreadUtils.getThreadUtils(task);
+        /**
+         * 如果close为true则说明线程被暂停过，则修改值之后直接运行即可。
+         * 这里虽然启动第一个是在主线程运行，但是第二个就会自动在分线程运行的
+         */
+        orderThread.setClose(false);
+        orderThread.run();
         
- 有没有注意到我的ftp是每次循环都会关闭的，因为你不关闭的话人家传了新的东西到ftp上面你还是用原来的连接就更新不了别人新上传的文件了。  
+    }
+    
+ 
+ 如下图：哈哈，我用oc写的一个简单的控制任务开关   
+    
+ ![控制任务开关器](http://olgfh4099.bkt.clouddn.com/Snip20170331_5.png)
+    
+ 这里就是直接开启线程执行任务，而在线程里的run方法里执行任务时根据一个标志boolean类型的属性close来控制任务的开始于停止，这里注意需要使用**synchronized**关键字将线程锁住，否则在线程睡眠的那段时间，再执行run就是重新创建一个新的线程了。（你们可以把关键字去掉，然后重复的开关开关）就知道我说的什么意思了。
+ 
+ 代码如下
+ 
+ 		
+ 	/**
+     * 线程方法
+     * 根据task来区分两个线程的方法，并且只要没有关闭，就一直执行任务，执行完sleep一段时间再次执行，通过
+     * 这种方式达到一个定时器的功能。
+     */
+    @Override
+    public void run() {
+        /**
+         * 这里使用synchronized关键字来锁住线程，
+         * 这样当线程被再次启动的时候就不会一个任务启动多个线程了。
+         */
 
+        if (task.equals("upload")){
+            synchronized (this) {
+                while (!close()) {
+                    System.out.println("查找订单文件" + new Date().toString());
+                    OrderInfoDeal.orderXmlUpload();
+                    FtpUtils.closeFtpClient(FtpUtils.getFTPClient());
+                    try {
+                        Thread.sleep(60000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
 
-- **属性文件乱码问题**
+        else if (task.equals("download")){
+            synchronized (this) {
+                while (!close()) {
+                    //回执xml下载
+                    System.out.println("查找回执文件" + new Date().toString());
+                    ReceiptDeal receiptDeal = new ReceiptDeal();
+                    receiptDeal.receiptXmlDownload();
+                    FtpUtils.closeFtpClient(FtpUtils.getFTPClient());
+                    try {
+                        Thread.sleep(60000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
 
-		localOrderXmlPath = new 
-		String(localOrderXmlPath.getBytes("ISO-8859-1"), "UTF-8");
-		
-	我把ftp的地址，用户名还有密码还有各种上传下载的路径都配置在配置文件里面。由于路径有中文，所以直接读出来是乱码的，需要进行转码才能正常使用。而且我是把ftp的相关配置放在外面，也就是不在src下面，这样方便别人修改。
+    }
+ 
+ 
+ - **优化2**
+
+ 之前的回执文件是直接下载至备份，然后解析存入数据库中再删除ftp上的文件，但是缺乏考虑到如果在下载过程，或者解析过程中途断掉之后的处理。如果断掉的话还是重头从ftp上下载，比较坑。
+ 
+ 这次加入了一个temp文件，先将ftp上的文件下载到temp文件夹里面，然后进行解析插入数据库，最后将temp文件移到备份。现在每次开启任务的时候是先判断temp文件里面是否有未解析的文件，有的话先解析再下载。
+ 
+ 这是项目流程考虑的不清楚！我的我的~
+ 
+ 
+ - **优化3**
+
+ 之前的存储到数据库是解析一个对象存储一个，这样真的太慢了！！！，插入50个就需要一分钟你敢信？
+ 
+ 所以我将之前的单个单个存储用foreach改成了批量存储，经测试，插入五百条数据大约一秒钟不到。
+ 
+ 用的mybatis代码如下：
 	
-	
-****
-
-好吧，感觉很啰嗦但是又没说到重点。。。再次审视了下我的代码都发现没啥可说的了。。。那就这样吧，我把代码上传到github上面，有需要的小伙伴可以下载看一看，有啥问题的可以联系我。新手代码有点渣，勿喷。
-
-###联系方式
+		<insert id="add" parameterType="java.util.ArrayList">
+        INSERT INTO add_receipt VALUES
+        <foreach item="item" index="key" collection="list"open="" separator="," close="">
+        (#{item.receiptId},#{item.guid},#{item.ebpCode},#{item.ebcCode},#{item.orderNo},#{item.returnStatus},#{item.returnTime}, #{item.returnInfo},#{item.uploadTime})
+         </foreach>;
+          </insert>
+          
+          
+          
+ 
+ 基本优化了以上三点。依旧新代码上传到[github](https://github.com/LucasDang/FTPUpAndDown.git)
+ 
+ 现在准备转成b/s项目，接下来还需要展示回执错误信息的一个列表，还需要再写几个接口调用。
+ 
+ 写着玩，有不对的地方还请指出来。谢谢。
+ 
+ ###联系方式
  - **github：** [大猫传说中的gitHud地址](https://github.com/LucasDang/FTPUpAndDown.git)
  - **邮箱：** [不经常用，回复慢的话请原谅](1974469025@qq.com)1974469025@qq.com
 
-
-
-
+ 
+ 
+ 

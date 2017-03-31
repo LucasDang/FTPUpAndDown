@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ceb:CEB311Message xmlns:ceb="http://www.chinaport.gov.cn/ceb">
+  <ceb:Order>
+    <ceb:OrderHead>
+      <ceb:guid>6BDE0B43-C6D1-4450-BAA8-C4BBED1D567A</ceb:guid>
+      <ceb:appType>1</ceb:appType>
+      <ceb:appTime>20170314014250</ceb:appTime>
+      <ceb:appStatus>2</ceb:appStatus>
+      <ceb:orderType>I</ceb:orderType>
+      <ceb:orderNo>201703130100001</ceb:orderNo>
+      <ceb:ebpCode>350246049Y</ceb:ebpCode>
+      <ceb:ebpName>澳多多（厦门）电子商务有限公司</ceb:ebpName>
+      <ceb:ebcCode>350246049Y</ceb:ebcCode>
+      <ceb:ebcName>澳多多（厦门）电子商务有限公司</ceb:ebcName>
+      <ceb:goodsValue>279.00</ceb:goodsValue>
+      <ceb:freight>50.00</ceb:freight>
+      <ceb:discount>0</ceb:discount>
+      <ceb:taxTotal>39.15</ceb:taxTotal>
+      <ceb:acturalPaid>368.15</ceb:acturalPaid>
+      <ceb:currency>142</ceb:currency>
+      <ceb:buyerRegNo>18602909669</ceb:buyerRegNo>
+      <ceb:buyerName>广琼</ceb:buyerName>
+      <ceb:buyerIdType>1</ceb:buyerIdType>
+      <ceb:buyerIdNumber>612322198511171423</ceb:buyerIdNumber>
+      <ceb:payCode>1108967996</ceb:payCode>
+      <ceb:payName>易智付科技（北京）有限公司</ceb:payName>
+      <ceb:payTransactionId>20170313-99320003-0100001-3383</ceb:payTransactionId>
+      <ceb:batchNumbers></ceb:batchNumbers>
+      <ceb:consignee>广琼</ceb:consignee>
+      <ceb:consigneeTelephone>18602909669</ceb:consigneeTelephone>
+      <ceb:consigneeAddress>陕西省,西安市陕西西安市长安区万科城20楼</ceb:consigneeAddress>
+      <ceb:consigneeDistrict>610100</ceb:consigneeDistrict>
+      <ceb:note></ceb:note>
+      <ceb:applyKey></ceb:applyKey>
+      <ceb:applyTo>BOTH</ceb:applyTo>
+      <ceb:tradeMode>9610</ceb:tradeMode>
+      <ceb:consigneeIdType>1</ceb:consigneeIdType>
+      <ceb:consigneeIdNumber>612322198511171423</ceb:consigneeIdNumber>
+      <ceb:consignor>Vincent/Joanne</ceb:consignor>
+      <ceb:consignorTelephone>0414510691/0422 109 106</ceb:consignorTelephone>
+      <ceb:consignorAddress>Unit B, 21 Worth Street,Chullora,NSW2190, Australia</ceb:consignorAddress>
+      <ceb:consignorCountry>601</ceb:consignorCountry>
+      <ceb:tradeCountry>601</ceb:tradeCountry>
+    </ceb:OrderHead>
+    <ceb:OrderList>
+      <ceb:gnum>1</ceb:gnum>
+      <ceb:itemNo>9421902960055</ceb:itemNo>
+      <ceb:itemName>澳大利亚 A2 Platinum 白金版婴儿奶粉3段  900g/罐 供婴幼儿食用 每罐可冲调46份，每份平均含量蛋白质2.6克，碳水化合物11.1克、糖8.3克、钠37毫克，维生素17.31毫克，矿物质287.8毫克，脂肪2.7克，膳食纤维1.5克</ceb:itemName>
+      <ceb:itemDescribe>澳大利亚 A2 Platinum 白金版婴儿奶粉3段  900g/罐促进免疫系统的发育</ceb:itemDescribe>
+      <ceb:barCode>9421902960055</ceb:barCode>
+      <ceb:unit>122</ceb:unit>
+      <ceb:qty>2</ceb:qty>
+      <ceb:price>88.00</ceb:price>
+      <ceb:totalPrice>176.00</ceb:totalPrice>
+      <ceb:currency>142</ceb:currency>
+      <ceb:country>601</ceb:country>
+      <ceb:note />
+      <ceb:goodsRegNoCiq>S390080201612000326</ceb:goodsRegNoCiq>
+      <ceb:wrapTypeCiq>4M</ceb:wrapTypeCiq>
+    </ceb:OrderList>
+    <ceb:OrderList>
+      <ceb:gnum>2</ceb:gnum>
+      <ceb:itemNo>9421902960031</ceb:itemNo>
+      <ceb:itemName>澳大利亚 A2 Platinum 白金版婴儿奶粉1段  900g/罐 供婴幼儿食用 每罐可冲调46份，每份平均含量蛋白质2.6克，碳水化合物11.1克、糖8.3克、钠37毫克，维生素17.31毫克，矿物质287.8毫克，脂肪2.7克，膳食纤维1.5克</ceb:itemName>
+      <ceb:itemDescribe>澳大利亚 A2 Platinum 白金版婴儿奶粉1段  900g/罐 助力宝宝成长</ceb:itemDescribe>
+      <ceb:barCode>9421902960031</ceb:barCode>
+      <ceb:unit>122</ceb:unit>
+      <ceb:qty>1</ceb:qty>
+      <ceb:price>103.00</ceb:price>
+      <ceb:totalPrice>103.00</ceb:totalPrice>
+      <ceb:currency>142</ceb:currency>
+      <ceb:country>601</ceb:country>
+      <ceb:note />
+      <ceb:goodsRegNoCiq>S390080201612000093</ceb:goodsRegNoCiq>
+      <ceb:wrapTypeCiq>4M</ceb:wrapTypeCiq>
+    </ceb:OrderList>
+  </ceb:Order>
+  <ceb:BaseTransfer>
+    <ceb:copCode>350246049Y</ceb:copCode>
+    <ceb:copName>澳多多（厦门）电子商务有限公司</ceb:copName>
+    <ceb:dxpMode>DXP</ceb:dxpMode>
+    <ceb:dxpId>DXPENT0000013698</ceb:dxpId>
+    <ceb:note />
+  </ceb:BaseTransfer>
+</ceb:CEB311Message>

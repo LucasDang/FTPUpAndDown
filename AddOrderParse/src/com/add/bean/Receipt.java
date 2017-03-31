@@ -6,6 +6,17 @@ import java.util.Date;
  * Created by Kuajing on 2017/3/15.
  */
 public class Receipt {
+    /**
+     * 这个对象对应的是两张表：
+     * 表一是订单号唯一的回执信息表。字段有：主键、批次号、订单号（唯一）、状态、回执时间、回执内容、上传时间。
+     * 表二是所有表的详细信息。字段包含全部信息。
+     */
+
+
+    /**
+     * 批次号 - 这个需要从其他的表查询获得
+     */
+    private String batchNo;
 
     private int receiptId;
 
@@ -95,5 +106,14 @@ public class Receipt {
 
     public void setUploadTime(Date uploadTime) {
         this.uploadTime = uploadTime;
+    }
+
+
+    public String getBatchNo() {
+        return batchNo;
+    }
+
+    public void setBatchNo(String batchNo) {
+        this.batchNo = batchNo;
     }
 }

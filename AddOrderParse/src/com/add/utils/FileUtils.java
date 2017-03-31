@@ -19,6 +19,19 @@ public  class  FileUtils  {
     public  FileUtils()  {
     }
 
+
+    public static boolean isFolderExist(String folderPath){
+        String  filePath  =  folderPath;
+        filePath  =  filePath.toString();
+        java.io.File  myFilePath  = new java.io.File(filePath);
+        if  (!myFilePath.exists())  {
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+
     /**
      *  新建目录
      *  @param  folderPath  String  如  c:/fqf
@@ -28,10 +41,9 @@ public  class  FileUtils  {
         try  {
             String  filePath  =  folderPath;
             filePath  =  filePath.toString();
-            java.io.File  myFilePath  =  new  java.io.File(filePath);
+            java.io.File  myFilePath  =  new java.io.File(filePath);
             if  (!myFilePath.exists())  {
-                logger.info("新建目录成功");
-                System.out.println("新建目录成功");
+                logger.info("新建目录成功" + folderPath);
                 myFilePath.mkdir();
             }
         }

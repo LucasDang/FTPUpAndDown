@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReturnMessage> 
+		<MessageHead> 
+				<messageFrom>Csp</messageFrom>  
+				<messageFunc>Order</messageFunc>  
+				<messageTime>2017-03-23 18:52:51</messageTime> 
+		</MessageHead>  
+		<OrderReturn> 
+				<guid/>  
+				<ebpCode/>  
+				<ebcCode/>  
+				<orderNo/>  
+				<returnStatus>0</returnStatus>  
+				<returnTime>20170323185251</returnTime>  
+				<returnInfo>ceb:consignorCountry' 的值 '韩国:值长度错误！|ceb:tradeCountry' 的值 '韩国:值长度错误！</returnInfo> 
+		</OrderReturn> 
+</ReturnMessage>
