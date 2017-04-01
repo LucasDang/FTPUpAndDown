@@ -38,7 +38,8 @@ public class FtpUtils {
      */
 
     public static ResourceBundle getFtpResource(){
-        //String proFilePath = System.getProperty("user.dir") +"/ftpConfig/ftp.properties";
+
+        //String proFilePath = System.getProperty("user.dir") + "/ftpConfig/ftp.properties";
         String proFilePath = "/Users/kuajing/Desktop/FTPUpAndDown/ftpConfig/ftp.properties";
         //System.out.println(proFilePath);
         BufferedInputStream inputStream;

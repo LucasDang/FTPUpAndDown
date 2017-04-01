@@ -16,9 +16,6 @@ public class ThreadUtils extends Thread{
 
     public boolean close;
 
-    /**
-     *
-     */
     private static ThreadUtils uploadThread;
     private static ThreadUtils downloadThread;
 
@@ -78,12 +75,14 @@ public class ThreadUtils extends Thread{
 
         if (task.equals("upload")){
             synchronized (this) {
+                System.out.println("开始上传订单" + new Date());
+
                 while (!close()) {
-                    System.out.println("查找订单文件" + new Date().toString());
+                    //System.out.println("查找订单文件" + new Date().toString());
                     OrderInfoDeal.orderXmlUpload();
                     FtpUtils.closeFtpClient(FtpUtils.getFTPClient());
                     try {
-                        Thread.sleep(60000);
+                        Thread.sleep(30000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -93,14 +92,16 @@ public class ThreadUtils extends Thread{
 
         else if (task.equals("download")){
             synchronized (this) {
+                System.out.println("开始下载回执" + new Date());
+
                 while (!close()) {
                     //回执xml下载
-                    System.out.println("查找回执文件" + new Date().toString());
+                    //System.out.println("查找回执文件" + new Date().toString());
                     ReceiptDeal receiptDeal = new ReceiptDeal();
                     receiptDeal.receiptXmlDownload();
                     FtpUtils.closeFtpClient(FtpUtils.getFTPClient());
                     try {
-                        Thread.sleep(60000);
+                        Thread.sleep(30000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

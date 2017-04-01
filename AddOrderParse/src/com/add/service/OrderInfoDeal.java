@@ -64,7 +64,6 @@ public class OrderInfoDeal {
                         e.printStackTrace();
                     }
 
-                    System.out.println("shangchuan");
 
                     FileInputStream in = null;
 

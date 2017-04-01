@@ -20,7 +20,6 @@ public class RootServlet extends javax.servlet.http.HttpServlet {
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         String action = request.getParameter("action");
 
-
         if (action.equals("upload") || action.equals("download")) {
             //开关任务
             String isOpen = request.getParameter("isOpen");
@@ -36,8 +35,6 @@ public class RootServlet extends javax.servlet.http.HttpServlet {
             System.out.println(batchNos);
 
         }
-
-
 
 
     }
@@ -60,7 +57,6 @@ public class RootServlet extends javax.servlet.http.HttpServlet {
          */
         orderThread.setClose(false);
         orderThread.run();
-
 
     }
 

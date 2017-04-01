@@ -25,6 +25,8 @@ import java.util.*;
 public class ReceiptDeal {
     private final static Log logger = LogFactory.getLog(ReceiptDeal.class);
 
+    //每次下载的限制数量
+    private final static int limitDownloadNum = 500;
 
     private static ResourceBundle resource = FtpUtils.getFtpResource();
     private static  String ftpReceiptXmlPath = resource.getString("ftpReceiptXmlPath");
@@ -47,16 +49,11 @@ public class ReceiptDeal {
             }
         }
 
-
         /**
-         * 先获取临时文件里面的文件，如果存在文件就先解析这些文件存到数据库之中再下载
+         * 检查临时文件夹
          */
-        String[] beforeFiles = FileUtils.getFileNames(localReceiptXmlTempPath);
-        if (beforeFiles != null && beforeFiles.length > 0){
-            System.out.println("temp文件夹有文件，个数为：" + beforeFiles.length);
-            //进行解析
-            receiptXmlParse(beforeFiles);
-        }
+        checkTemp();
+
 
         /**
          * 获取文件名列表
@@ -68,29 +65,45 @@ public class ReceiptDeal {
         }
 
         String[] fileNames = FtpUtils.getFileNameList(ftpReceiptXmlPath,ftpClient);
+        
 
         if (fileNames != null && fileNames.length > 0) {
+            String firstStr=fileNames[0].substring(fileNames[0].lastIndexOf(".")+1);
+            if (fileNames.length == 1){
+                if (!firstStr.equals("xml")){
+
+                    logger.info("ftp上面只有一个隐藏文件了" + new Date());
+                    return;
+                }
+            }
+
             //将数组倒叙处理
             Collections.reverse(Arrays.asList(fileNames));
 
-            for (int i = 0; i < (fileNames.length<100?fileNames.length:100) ; i++) {
+
+            int downloadNum = fileNames.length<limitDownloadNum?fileNames.length:limitDownloadNum;
+
+            logger.info("ftp上有回执文件，个数为===" + fileNames.length + "===下载其中最后的===" + downloadNum + "===个===" + new Date());
+
+            for (int i = 0; i < downloadNum ; i++) {
 
                 //如果文件不是xml格式的就不下载
-                String str=fileNames[i].substring(fileNames[i].lastIndexOf(".")+1);
+                String str = fileNames[i].substring(fileNames[i].lastIndexOf(".")+1);
 
-                String realName=fileNames[i].substring(fileNames[i].lastIndexOf("/")+1);
+                String realName = fileNames[i].substring(fileNames[i].lastIndexOf("/")+1);
 
                 if(str.equals("xml")) {
                     /**
                      * 下载操作
                      **/
-                    logger.info("下载回执Xml文件：" + realName);
                     FtpUtils.downloadFtpFile(ftpReceiptXmlPath, localReceiptXmlTempPath , realName, ftpClient);
                 }
 
             }
             //关闭连接
             FtpUtils.closeFtpClient(ftpClient);
+
+            logger.info("下载了===" + downloadNum + "===个回执完成===" + new Date());
 
             //进行解析
             receiptXmlParse(fileNames);
@@ -106,6 +119,7 @@ public class ReceiptDeal {
          */
         FTPClient ftpClient = FtpUtils.getFTPClient();
         if (!ftpClient.isConnected()){
+            System.out.println("连接ftp失败");
             logger.error("连接ftp失败");
             return;
         }
@@ -122,18 +136,18 @@ public class ReceiptDeal {
         FileUtils.newFolder(localReceiptXmlBackUpPath+dateString);
 
 
-        System.out.println("开始解析" + new Date());
+        int downloadNum = fileNames.length<limitDownloadNum?fileNames.length:limitDownloadNum;
+        logger.info("开始解析===" + downloadNum + "===个回执文件===" + new Date());
 
-        for (int i=0;i<(fileNames.length<100?fileNames.length:100);i++) {
+        for (int i=0;i<downloadNum;i++) {
             String realName=fileNames[i].substring(fileNames[i].lastIndexOf("/")+1);
             //如果文件不是xml格式的就不下载不解析
 
-            String[] strList = fileNames[i].split(".");
-            //String str=fileNames[i].substring(fileNames[i].lastIndexOf(".")+1);
+            String str=fileNames[i].substring(fileNames[i].lastIndexOf(".")+1);
 
             //Order.201703210310433.Ciq.1.EB_add.DXPENT0000013698.20170324180836.146.back
 
-            if(strList.length > 0 && strList[10].equals("xml")){
+            if(str.equals("xml")){
             //删除ftp上已下载的文件
             FtpUtils.deleteFileFtp(ftpReceiptXmlPath,realName,ftpClient);
 
@@ -154,26 +168,23 @@ public class ReceiptDeal {
 
                 receipts.add(receipt);
 
-                //System.out.println("解析成对象，添加至数组");
-
-                //ReceiptMapperImp receiptMapperImp = new ReceiptMapperImp();
-                //receiptMapperImp.checkIsExist(receipt);
-
 
             }
         }
 
         if(receipts.size() > 0) {
-            System.out.println("解析完成" + new Date());
+
+            logger.info("完成解析===" + receipts.size() + "===个回执文件===" + new Date());
 
             ReceiptMapperImp receiptMapperImp = new ReceiptMapperImp();
             receiptMapperImp.add(receipts);
 
-            System.out.println("插入完成" + new Date());
+            logger.info("插入完成===" + receipts.size() + "===个回执文件===" + new Date());
+
         }
 
 
-        for (int i=0;i<(fileNames.length<100?fileNames.length:100);i++) {
+        for (int i=0;i<(fileNames.length<limitDownloadNum?fileNames.length:limitDownloadNum);i++) {
             String realName = fileNames[i].substring(fileNames[i].lastIndexOf("/") + 1);
             //如果文件不是xml格式的就不下载不解析
             String str = fileNames[i].substring(fileNames[i].lastIndexOf(".") + 1);
@@ -182,10 +193,40 @@ public class ReceiptDeal {
                 FileUtils.moveFile(localReceiptXmlTempPath + realName, localReceiptXmlBackUpPath + dateString + "/" + realName);
             }
         }
-        System.out.println("删除完成" + new Date());
+
+        logger.info("移动temp文件完成===" + new Date());
 
         FtpUtils.closeFtpClient(ftpClient);
     }
 
+
+    private void checkTemp(){
+        /**
+         * 先获取临时文件里面的文件，如果存在文件就先解析这些文件存到数据库之中再下载
+         */
+        String[] beforeFiles = FileUtils.getFileNames(localReceiptXmlTempPath);
+        if (beforeFiles != null && beforeFiles.length > 0){
+            String firstStr=beforeFiles[0].substring(beforeFiles[0].lastIndexOf(".")+1);
+            if (beforeFiles.length == 1 && !firstStr.equals("xml")){
+                    System.out.println("该文件下只存在一个隐藏文件");
+                    return;
+            }else {
+                //String str=beforeFiles[1].substring(beforeFiles[1].lastIndexOf(".")+1);
+                //if (str.equals("xml")) {
+                //进行解析
+                    logger.info("temp文件夹有文件，个数为===" + beforeFiles.length + "===解析其中最后的===" + limitDownloadNum + "===个===" + new Date());
+                    //进行解析
+                    receiptXmlParse(beforeFiles);
+
+                    /**
+                     * 由于设置了每次只解析固定的文件，所以如果temp文件里面超出了，剩下的就没法解析，所以需要一直解析
+                     * 将temp文件夹里的文件解析完再下载
+                     */
+                    checkTemp();
+                //}
+            }
+        }
+
+    }
 
 }
