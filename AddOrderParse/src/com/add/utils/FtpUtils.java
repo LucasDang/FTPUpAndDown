@@ -1,5 +1,6 @@
 package com.add.utils;
 
+import com.add.exception.AddParseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.ftp.FTPClient;
@@ -23,7 +24,7 @@ public class FtpUtils {
 
     private static ResourceBundle resource = getFtpResource();
 
-    private static final String ftpHost = resource.getString("ftpHost");
+    public static final String ftpHost = resource.getString("ftpHost");
     private static final int ftpPort = Integer.parseInt(resource.getString("ftpPort"));
     private static final String ftpUserName = resource.getString("ftpUserName");
     private static final String ftpPassword = resource.getString("ftpPassword");
@@ -37,7 +38,7 @@ public class FtpUtils {
      * @return
      */
 
-    public static ResourceBundle getFtpResource(){
+    public static ResourceBundle getFtpResource() throws AddParseException{
 
         //String proFilePath = System.getProperty("user.dir") + "/ftpConfig/ftp.properties";
         String proFilePath = "/Users/kuajing/Desktop/FTPUpAndDown/ftpConfig/ftp.properties";
@@ -56,6 +57,7 @@ public class FtpUtils {
             // TODO Auto-generated catch block
             logger.error("读取ftp配置文件发生错误。");
             e.printStackTrace();
+
         }
 
         return rs;
@@ -77,7 +79,6 @@ public class FtpUtils {
             ftpClient.login(ftpUserName, ftpPassword);// 登陆FTP服务器
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
             ftpClient.setControlEncoding("utf-8");
-
 
             if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
                 logger.error("未连接到FTP，用户名或密码错误。");
@@ -145,6 +146,8 @@ public class FtpUtils {
         } catch (IOException e) {
             logger.error("文件读取错误。");
         }
+
+
 
     }
 

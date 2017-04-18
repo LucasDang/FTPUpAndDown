@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Class-Path: libs/sqljdbc42.jar libs/dom4j-1.6.1.jar libs/log4j-1.2.16.
+ jar libs/mybatis-3.1.1.jar libs/itcast-tools-1.4.jar libs/commons-net
+ -1.4.1.jar libs/commons-logging-1.2.jar libs/commons-beanutils-1.9.3.
+ jar
+Main-Class: com.add.main.Main
+

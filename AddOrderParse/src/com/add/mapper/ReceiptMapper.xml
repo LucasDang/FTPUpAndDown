@@ -5,14 +5,6 @@
 
 <mapper namespace="com.add.mapper.ReceiptMapper">
 
-    <select id="checkIsExist" parameterType="Receipt" resultType="java.lang.String">
-        SELECT returnTime FROM add_latestReceipt WHERE orderNo=#{orderNo};
-    </select>
-
-    <select id="getBatchNo" parameterType="java.lang.String" resultType="java.lang.String">
-        SELECT batchNo FROM add_order WHERE orderNo=#{value};
-    </select>
-
     <insert id="addLatest" parameterType="Receipt">
         INSERT INTO add_latestReceipt VALUES
         (NULL,#{batchNo},#{orderNo},#{returnStatus},#{returnTime},#{returnInfo},#{uploadTime});
@@ -23,15 +15,166 @@
     </update>
 
     <insert id="add" parameterType="java.util.ArrayList">
-        INSERT INTO add_receipt VALUES
+        INSERT INTO dbo.add_receipt VALUES
         <foreach item="item" index="key" collection="list"
-                 open="" separator="," close="">(#{item.receiptId},#{item.guid},#{item.ebpCode},#{item.ebcCode},#{item.orderNo},#{item.returnStatus},#{item.returnTime},#{item.returnInfo},#{item.uploadTime})</foreach>;
+                 open="" separator="," close="">(#{item.guid},#{item.ebpCode},#{item.ebcCode},#{item.orderNo},#{item.returnStatus},#{item.returnTime},#{item.returnInfo},#{item.uploadTime})</foreach>;
     </insert>
+
+    <select id="getBatchNos" resultType="java.lang.String">
+        SELECT top ${pageSize} BatchNumber FROM shop_Orders WHERE BatchNumber is not Null group by BatchNumber order BY BatchNumber DESC;
+    </select>
+
+    <select id="getOrderCountByBatchNo" parameterType="java.lang.String" resultType="int">
+         SELECT count(orderId)  FROM shop_Orders WHERE BatchNumber=#{batchNo};
+    </select>
+
+    <select id="getBatchNosByFuzzy" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT BatchNumber FROM shop_Orders WHERE BatchNumber LIKE concat(concat('%',#{fuzzyBatchNo}),'%') group by BatchNumber  order BY BatchNumber;
+    </select>
 
 <!--
     select distinct a.* from add_receipt a inner join
     (select orderNo,MAX(returnTime) returnTime  from add_receipt where orderNo<>'' and orderNo in
     (select OrderNo from add_order where batchNo=(SELECT MAX(batchNo) from add_order)) group by orderNo) b on a.orderNo=b.orderNo and a.returnTime=b.returnTime ORDER BY orderNo DESC
     -->
+
+    <select id="getReceiptsByBatchNo" resultType="Receipt">
+        SELECT top ${pageSize} * from (
+        select top ${startRecord} a.* from dbo.add_receipt AS a ,
+        (select orderNo,MAX(returnTime) returnTime from dbo.add_receipt
+        WHERE orderNo in
+        (select OrderId from dbo.shop_Orders where BatchNumber=#{batchNo})
+
+            <if test="startDate!=null">
+                <if test="endDate!=null">AND uploadTime BETWEEN #{startDate} AND #{endDate}
+                </if>
+                <if test="endDate==null">
+                    AND uploadTime > #{startDate}
+                </if>
+            </if>
+
+        group by orderNo
+        ) AS b
+        WHERE a.orderNo=b.orderNo and a.returnTime=b.returnTime
+
+        <if test='status == "-1"'>
+            and a.returnStatus='0'
+        </if>
+        <if test='status == "1"'>
+            and a.returnStatus!='0'
+        </if>
+
+        <if test='sort == "1"'>
+            ORDER BY orderNo
+        </if>
+        <if test='sort == "2"'>
+            ORDER BY orderNo DESC
+        </if>
+
+        ) as t
+
+        <if test='sort == "1"'>
+            ORDER BY orderNo DESC
+        </if>
+        <if test='sort == "2"'>
+            ORDER BY orderNo
+        </if>
+        ;
+    </select>
+
+    <select id="getReceiptsCountByBatchNo" resultType="java.lang.String">
+        select count(b.orderNo) from dbo.add_receipt AS a INNER JOIN
+        (select orderNo,MAX(returnTime) returnTime  from dbo.add_receipt
+        WHERE orderNo in
+        (select OrderId from dbo.shop_Orders where BatchNumber=#{batchNo})
+
+            <if test="startDate!=null">
+                <if test="endDate!=null">
+                    AND uploadTime BETWEEN #{startDate} AND #{endDate}
+                </if>
+                <if test="endDate==null">
+                    AND uploadTime > #{startDate}
+                </if>
+            </if>
+
+        group by orderNo
+        ) AS b
+        on a.orderNo=b.orderNo and a.returnTime=b.returnTime
+        <if test='status == "-1"'>
+            and a.returnStatus='0'
+        </if>
+        <if test='status == "1"'>
+            and a.returnStatus!='0'
+        </if>
+
+
+        ;
+    </select>
+
+    <select id="getReceiptsByDate" resultType="Receipt">
+        SELECT top ${pageSize} * from (
+        SELECT top ${startRecord} a.* FROM dbo.add_receipt AS a, (select orderNo,MAX(returnTime) returnTime FROM dbo.add_receipt
+        <where>
+            <if test="startDate!=null">
+                <if test="endDate!=null">
+                    uploadTime BETWEEN #{startDate} AND #{endDate}
+                </if>
+                <if test="endDate==null">
+                    uploadTime > #{startTime}
+                </if>
+            </if>
+        </where>
+        GROUP BY orderNo) AS b
+        where a.orderNo = b.orderNo and a.returnTime = b.returnTime
+        <if test='status == "-1"'>
+            and a.returnStatus='0'
+        </if>
+        <if test='status == "1"'>
+            and a.returnStatus!='0'
+        </if>
+
+        <if test='sort == "1"'>
+            ORDER BY orderNo
+        </if>
+        <if test='sort == "2"'>
+            ORDER BY orderNo DESC
+        </if>
+        )AS t
+        <if test='sort == "1"'>
+            ORDER BY orderNo DESC
+        </if>
+        <if test='sort == "2"'>
+            ORDER BY orderNo
+        </if>
+       ;
+    </select>
+
+    <select id="getReceiptsCountByDate" resultType="java.lang.String">
+        SELECT count(b.orderNo) FROM dbo.add_receipt AS a, (select orderNo,MAX(returnTime) returnTime FROM dbo.add_receipt
+        <where>
+            <if test="startDate!=null">
+                <if test="endDate!=null">
+                    uploadTime BETWEEN #{startDate} AND #{endDate}
+                </if>
+                <if test="endDate==null">
+                    uploadTime > #{startDate}
+                </if>
+            </if>
+        </where>
+        GROUP BY orderNo) AS b
+        where a.orderNo = b.orderNo and a.returnTime = b.returnTime
+        <if test='status == "-1"'>
+            and a.returnStatus='0'
+        </if>
+        <if test='status == "1"'>
+            and a.returnStatus!='0'
+        </if>
+        ;
+    </select>
+
+
+    <select id="getReceiptDetail" resultType="Receipt">
+        SELECT * from dbo.add_receipt WHERE orderNo=#{orderNo} ORDER BY returnTime
+    </select>
 
 </mapper>

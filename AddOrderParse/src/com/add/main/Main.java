@@ -19,7 +19,7 @@ public class Main {
 
         ThreadUtils downloadThread = ThreadUtils.getThreadUtils("download");
         downloadThread.setClose(false);
-        downloadThread.run();
+        downloadThread.start();
 
     }
 }

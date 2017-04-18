@@ -12,12 +12,6 @@ public class Receipt {
      * 表二是所有表的详细信息。字段包含全部信息。
      */
 
-
-    /**
-     * 批次号 - 这个需要从其他的表查询获得
-     */
-    private String batchNo;
-
     private int receiptId;
 
     private String guid;
@@ -109,11 +103,4 @@ public class Receipt {
     }
 
 
-    public String getBatchNo() {
-        return batchNo;
-    }
-
-    public void setBatchNo(String batchNo) {
-        this.batchNo = batchNo;
-    }
 }

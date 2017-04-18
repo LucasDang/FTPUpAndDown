@@ -45,17 +45,20 @@ public class OrderInfoDeal {
         Date currentDay = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String dateString = formatter.format(currentDay);
-        //System.out.println("当前时间："+currentDay.toString());
+        
         boolean isExist = FileUtils.isFolderExist(localOrderXmlPath + dateString);
         if (isExist){
             String[] fileNames = FileUtils.getFileNames(localOrderXmlPath + dateString);
 
             if (fileNames.length>0){
+
                 FTPClient ftpClient = FtpUtils.getFTPClient();
                 if (!ftpClient.isConnected()){
                     logger.error("上传订单连接ftp失败");
                     return;
                 }
+                logger.info("开始上传订单文件===" + fileNames.length + "===个");
+
                 //存在文件，进行上传
                 for (int i=0;i<fileNames.length;i++){
                     try {
@@ -77,6 +80,8 @@ public class OrderInfoDeal {
                     FileUtils.newFolder(localOrderXmlBackUpPath+dateString);
                     FileUtils.moveFile(localOrderXmlPath + dateString + "/" + fileNames[i],localOrderXmlBackUpPath+dateString + "/"+fileNames[i]);
                 }
+
+                logger.info("完成上传订单文件===" + fileNames.length + "===个");
 
                 FtpUtils.closeFtpClient(ftpClient);
             }

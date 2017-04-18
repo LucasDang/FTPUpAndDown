@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>澳多多物流回执信息列表</title>
+
+    <!-- 自定义的css样式-->
+    <link href="AdminLTE/css/Add.css" rel="stylesheet">
+    <!-- 第三方的css样式-->
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="AdminLTE/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="AdminLTE/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="AdminLTE/css/animate.css" rel="stylesheet">
+    <link href="AdminLTE/css/style.css?v=4.1.0" rel="stylesheet">
+    <link rel="stylesheet" href="AdminLTE/js/plugins/layer/skin/layer.css" id="layui_layer_skinlayercss">
+
+</head>
+<body  class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <div class="col-sm-12">
+
+        <div class="input-group col-sm-4">
+            <input type="text" class="form-control"> <span class="input-group-btn"> <button type="button" class="btn btn-primary">批次号搜索
+                                        </button> </span>
+        </div>
+
+        <div class="input-group col-sm-4">
+            <input type="text" class="form-control">
+
+            <div class="input-group-btn">
+                <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button" aria-expanded="false">时间单位<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right">
+                    <li><a href="index.html#">月</a>
+                    </li>
+                    <li><a href="index.html#">日</a>
+                    </li>
+                    <li><a href="index.html#">天</a>
+                    </li>
+                    <li><a href="index.html#">时</a>
+                    </li>
+                    <li><a href="index.html#">分</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">图标触发日期：</label>
+            <div class="col-sm-10">
+                <input placeholder="开始日期" class="form-control layer-date" id="start">
+                <input placeholder="结束日期" class="form-control layer-date" id="end">
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>回执信息列表</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="table_basic.html#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="table_basic.html#">选项1</a>
+                        </li>
+                        <li><a href="table_basic.html#">选项2</a>
+                        </li>
+                    </ul>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>订单号</th>
+                        <th>ebcCode</th>
+                        <th>ebpCode</th>
+                        <th>状态</th>
+                        <th>回执信息</th>
+                        <th>回执时间</th>
+                        <th>插入时间</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>张三</td>
+                        <td>男</td>
+                        <td>23</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>李四</td>
+                        <td>男</td>
+                        <td>27</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>王麻子</td>
+                        <td>男</td>
+                        <td>65</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<script src="AdminLTE/js/jquery.min.js?v=2.1.4"></script>
+<script src="AdminLTE/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="AdminLTE/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="AdminLTE/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="AdminLTE/js/plugins/layer/layer.min.js"></script>
+<script src="AdminLTE/js/hAdmin.js?v=4.1.0"></script>
+<script type="text/javascript" src="AdminLTE/js/index.js"></script>
+<script src="AdminLTE/js/plugins/pace/pace.min.js"></script>
+
+</body>
+</html>

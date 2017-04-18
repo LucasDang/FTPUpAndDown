@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="AddOrderParseArchive">
+    <output-path>$PROJECT_DIR$/out/artifacts/AddOrderParseArchive</output-path>
+    <root id="archive" name="AddOrderParseArchive.war">
+      <element id="artifact" artifact-name="AddOrderParse:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -14,10 +14,12 @@ public class ThreadUtils extends Thread{
 
     public String task;
 
-    public boolean close;
+    public boolean close = true;//默认是关闭状态
 
     private static ThreadUtils uploadThread;
     private static ThreadUtils downloadThread;
+
+    private final static long IntervalTime = 10000;
 
 
     /**
@@ -67,7 +69,8 @@ public class ThreadUtils extends Thread{
      * 这种方式达到一个定时器的功能。
      */
     @Override
-    public void run() {
+    public void run(){
+
         /**
          * 这里使用synchronized关键字来锁住线程，
          * 这样当线程被再次启动的时候就不会一个任务启动多个线程了。
@@ -82,7 +85,7 @@ public class ThreadUtils extends Thread{
                     OrderInfoDeal.orderXmlUpload();
                     FtpUtils.closeFtpClient(FtpUtils.getFTPClient());
                     try {
-                        Thread.sleep(30000);
+                        Thread.sleep(IntervalTime);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -98,10 +101,13 @@ public class ThreadUtils extends Thread{
                     //回执xml下载
                     //System.out.println("查找回执文件" + new Date().toString());
                     ReceiptDeal receiptDeal = new ReceiptDeal();
+
                     receiptDeal.receiptXmlDownload();
+
                     FtpUtils.closeFtpClient(FtpUtils.getFTPClient());
+
                     try {
-                        Thread.sleep(30000);
+                        Thread.sleep(IntervalTime);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

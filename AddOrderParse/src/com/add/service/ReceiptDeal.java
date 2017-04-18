@@ -26,7 +26,7 @@ public class ReceiptDeal {
     private final static Log logger = LogFactory.getLog(ReceiptDeal.class);
 
     //每次下载的限制数量
-    private final static int limitDownloadNum = 500;
+    private final static int limitDownloadNum = 200;
 
     private static ResourceBundle resource = FtpUtils.getFtpResource();
     private static  String ftpReceiptXmlPath = resource.getString("ftpReceiptXmlPath");
@@ -36,7 +36,7 @@ public class ReceiptDeal {
     //防止地址被编码一次之后又再次编码
     private static int i = 0;
 
-    public void receiptXmlDownload() {
+    public void receiptXmlDownload(){
         if (i==0) {
             try {
                 ftpReceiptXmlPath = new String(ftpReceiptXmlPath.getBytes("ISO-8859-1"), "UTF-8");
@@ -61,7 +61,7 @@ public class ReceiptDeal {
         FTPClient ftpClient = FtpUtils.getFTPClient();
         if (!ftpClient.isConnected()){
             logger.error("连接ftp失败");
-            return;
+            return ;
         }
 
         String[] fileNames = FtpUtils.getFileNameList(ftpReceiptXmlPath,ftpClient);
@@ -71,9 +71,9 @@ public class ReceiptDeal {
             String firstStr=fileNames[0].substring(fileNames[0].lastIndexOf(".")+1);
             if (fileNames.length == 1){
                 if (!firstStr.equals("xml")){
-
                     logger.info("ftp上面只有一个隐藏文件了" + new Date());
-                    return;
+
+                    return ;
                 }
             }
 
@@ -108,6 +108,7 @@ public class ReceiptDeal {
             //进行解析
             receiptXmlParse(fileNames);
         }
+
 
     }
 

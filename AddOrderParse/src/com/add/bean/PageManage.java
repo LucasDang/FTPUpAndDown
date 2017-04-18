@@ -5,28 +5,27 @@ package com.add.bean;
  */
 public class PageManage {
 
-    /*总记录个数*/
+    /**
+     * 总记录个数
+     */
     private int totalRecords;
 
-    /*当前页数
-    * 默认为第1页
-    * */
+    /**
+     * 当前页数
+     * 默认为第1页
+     */
     private int currentPage = 1;
 
     /**
-    * 查询个数
-    * 默认为6
-     * */
-    private int pageSize = 2;
+     * 查询个数
+     * 默认为6
+     */
+    private int pageSize = 20;
+
 
     /**
-     * 批次号，根据批次号来返回一个一个的订单
+     * 通过计算得出这个起点值，然后即可以用sql语句（limit 起点，个数）来进行查询
      */
-    private String batchNo;
-
-
-    /*通过计算得出这个起点值，然后即可以用sql语句（limit 起点，个数）来进行查询
-    * */
     private int startRecord;
 
     public int getTotalRecords() {

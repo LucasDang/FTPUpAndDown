@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReturnMessage> 
+		<MessageHead> 
+				<messageFrom>Csp</messageFrom>  
+				<messageFunc>Order</messageFunc>  
+				<messageTime>2017-03-24 18:06:07</messageTime> 
+		</MessageHead>  
+		<OrderReturn> 
+				<guid>D7D62455-1CE7-4F50-8644-6AF46AD8F411</guid>  
+				<ebpCode>350246049Y</ebpCode>  
+				<ebcCode>350246049Y</ebcCode>  
+				<orderNo>201703210310412</orderNo>  
+				<returnStatus>1</returnStatus>  
+				<returnTime>20170324180607</returnTime>  
+				<returnInfo>CSP入库成功</returnInfo> 
+		</OrderReturn> 
+</ReturnMessage>

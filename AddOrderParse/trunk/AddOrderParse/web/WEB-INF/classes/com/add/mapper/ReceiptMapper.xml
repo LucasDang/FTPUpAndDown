@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.add.mapper.ReceiptMapper">
+
+    <select id="checkIsExist" parameterType="Receipt" resultType="java.lang.String">
+        SELECT returnTime FROM add_latestReceipt WHERE orderNo=#{orderNo};
+    </select>
+
+    <select id="getBatchNo" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT batchNo FROM add_order WHERE orderNo=#{value};
+    </select>
+
+    <insert id="addLatest" parameterType="Receipt">
+        INSERT INTO add_latestReceipt VALUES
+        (NULL,#{batchNo},#{orderNo},#{returnStatus},#{returnTime},#{returnInfo},#{uploadTime});
+    </insert>
+
+    <update id="updateLatest" parameterType="Receipt">
+        UPDATE add_latestReceipt SET returnStatus=#{returnStatus},returnTime=#{returnTime},returnInfo=#{returnInfo},uploadTime=#{uploadTime} WHERE orderNo=#{orderNo};
+    </update>
+
+    <insert id="add" parameterType="java.util.ArrayList">
+        INSERT INTO add_receipt VALUES
+        <foreach item="item" index="key" collection="list"
+                 open="" separator="," close="">(#{item.receiptId},#{item.guid},#{item.ebpCode},#{item.ebcCode},#{item.orderNo},#{item.returnStatus},#{item.returnTime},#{item.returnInfo},#{item.uploadTime})</foreach>;
+    </insert>
+
+<!--
+    select distinct a.* from add_receipt a inner join
+    (select orderNo,MAX(returnTime) returnTime  from add_receipt where orderNo<>'' and orderNo in
+    (select OrderNo from add_order where batchNo=(SELECT MAX(batchNo) from add_order)) group by orderNo) b on a.orderNo=b.orderNo and a.returnTime=b.returnTime ORDER BY orderNo DESC
+    -->
+
+</mapper>

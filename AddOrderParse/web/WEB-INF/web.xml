@@ -9,6 +9,16 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>RootServlet</servlet-name>
-        <url-pattern>/main</url-pattern>
+        <url-pattern>/receiptsHandle</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>FtpHandleServlet</servlet-name>
+        <servlet-class>com.add.servlet.FtpHandleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FtpHandleServlet</servlet-name>
+        <url-pattern>/ftpHandle</url-pattern>
+    </servlet-mapping>
+
 </web-app>
