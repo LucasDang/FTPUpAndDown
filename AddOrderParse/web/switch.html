@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1" name="viewport" />
+    <meta http-equiv="content-script-type" content="text/javascript">
+    <meta name="format-detection" content="telephone=no" />
+	<title>文件列表</title>
+	<link rel="stylesheet" href="resource/css/switch.css">
+
+	<script src="resource/js/jquery-3.1.1.min.js"></script>
+	<script src="resource/js/switch.js"></script>
+	<script src="resource/js/common.js"></script>
+
+	<!--ajax请求 -->
+	<script>
+        jQuery(function () {
+			getStatus();
+        });
+
+		function getStatus() {
+			jQuery.ajax2({
+				url: '/AddReceipt/ftpHandle',
+				type: "post",
+				data:{action:'status',task:'upload,download'},
+				dataType: "json",
+				success: function (data) {
+					if (data.code == 200){
+					    if (data.result.code == 1){
+					        var responseObj = data.result.result;
+					        if (!responseObj.download || responseObj.download == 0){
+					            jQuery("#download").attr("class","switch-off");
+							}else if(responseObj.download == 1){
+                                jQuery("#download").attr("class","switch-on");
+							}
+
+                            if (!responseObj.upload || responseObj.upload == 0){
+                                jQuery("#upload").attr("class","switch-off");
+                            }else if(responseObj.upload == 1){
+                                jQuery("#upload").attr("class","switch-on");
+                            }
+                            honeySwitch.init();
+
+                            jQuery("#uploadLog").text(responseObj.uploadlog);
+                            jQuery("#downloadLog").text(responseObj.downloadlog);
+
+						}else {
+					        alert(data.result.description);
+						}
+					}else {
+					    alert(data.msg);
+					}
+				    console.log(data);
+
+				}
+			});
+		}
+
+
+		function getFileNames() {
+            jQuery.ajax2({
+                url: '/AddReceipt/ftpHandle',
+                type: "post",
+                data:{action:'fileNames',task:'upload,download'},
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200){
+                        if (data.result.code == 1){
+                            var responseObj = data.result.result;
+							//订单返回
+                            if (responseObj.localOrder.code == 1){
+								if (responseObj.localOrder.fileCount > 0){
+                                    jQuery("#localOrderCount").text(responseObj.localOrder.fileCount);
+
+                                    var localOrderList = "";
+
+                                    jQuery.each(responseObj.localOrder.fileNames, function (i, item) {
+                                        localOrderList += "<ul>" + "<li>" + item + "</li>" + "</ul>";
+                                    });
+                                    jQuery(".localOrderFiles").append(localOrderList);
+								}else {
+                                    jQuery(".localOrderFiles").empty();
+                                    jQuery("#localOrderCount").text('0');
+								}
+							}else {
+                                jQuery(".localOrderFiles").empty();
+                                jQuery("#localOrderCount").text('0');
+                                alert(responseObj.localOrder.description);
+							}
+							//回执返回
+                            if (responseObj.ftpReceipt.code == 1){
+								if (responseObj.ftpReceipt.fileCount > 0){
+									jQuery("#ftpReceiptCount").text(responseObj.ftpReceipt.fileCount);
+
+									var ftpReceiptList = "";
+
+									jQuery.each(responseObj.ftpReceipt.fileNames, function (i, item) {
+										ftpReceiptList += "<ul>" + "<li>" + item + "</li>" + "</ul>";
+									});
+									jQuery(".ftpReceiptFiles").append(ftpReceiptList);
+								}else {
+									jQuery(".ftpReceiptFiles").empty();
+									jQuery("#ftpReceiptCount").text('0');
+								}
+                            }else {
+                                jQuery(".downloadFiles").empty();
+                                jQuery("#ftpReceiptCount").text('0');
+                                alert(responseObj.ftpReceipt.description);
+                            }
+
+                        }else {
+                            jQuery(".localOrderFiles").empty();
+                            jQuery(".ftpReceiptFiles").empty();
+                            jQuery("#ftpReceiptCount").text('0');
+                            jQuery("#localOrderCount").text('0');
+                            alert(data.result.description);
+                        }
+                    }else {
+                        alert(data.msg);
+                    }
+                    console.log(data);
+
+                }
+            });
+        }
+
+
+	</script>
+
+</head>
+<body>
+<h1>文件上传下载</h1>
+<div class="common-row">
+	<div class="cell-left"><p>上传</p><span class="switch-off" id="upload" onclick="switchTask(this)"></span></div>
+	<div class="cell-right"><p>下载</p><span class="switch-off" id="download" onclick="switchTask(this)"></span></div>
+</div>
+<div class="llog">
+	<p class="cell-left">
+		<b>log:</b>&nbsp;&nbsp;<span id="uploadLog">上传输出</span>
+	</p>
+	<p class="cell-right">
+		<b>log:</b>&nbsp;&nbsp;<span id="downloadLog">下载输出</span>
+	</p>
+	<input class="reload"  value=刷新 onclick="getStatus()" />
+</div>
+<div class="list">
+    <p class="cell-left">
+		<b>本地订单文件总数:</b>&nbsp;&nbsp;<span id="localOrderCount"></span>
+	</p>
+	<p class="cell-right">
+		<b>ftp上回执总数:</b>&nbsp;&nbsp;<span id="ftpReceiptCount"></span>
+	</p>
+	<input class="reload"  value=刷新 onclick="getFileNames()" />
+	<div class="cell-left localOrderFiles">
+
+	</div>
+	<div class="cell-right ftpReceiptFiles">
+
+	</div>
+</div>
+</body>
+</html>

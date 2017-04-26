@@ -21,6 +21,8 @@ public class ThreadUtils extends Thread{
 
     private final static long IntervalTime = 10000;
 
+    //变量保存输出，用来表示当前线程没有出错，也可用来表示当前线程是否已经被销毁
+    private String logInfo;
 
     /**
      * 构造方法 新建线程，并根据任务命名线程
@@ -58,8 +60,13 @@ public class ThreadUtils extends Thread{
     /**
      * 停止任务
      */
-    public void cancelTask(){
+    public void cancelTask(String task){
         setClose(true);
+        if (task.equals("upload")) {
+            uploadThread = null;
+        }else {
+            downloadThread = null;
+        }
     }
 
 
@@ -78,10 +85,11 @@ public class ThreadUtils extends Thread{
 
         if (task.equals("upload")){
             synchronized (this) {
-                System.out.println("开始上传订单" + new Date());
 
                 while (!close()) {
-                    //System.out.println("查找订单文件" + new Date().toString());
+                    System.out.println("查找订单文件" + new Date().toString());
+
+                    logInfo = "查找订单文件" + new Date().toString();
                     OrderInfoDeal.orderXmlUpload();
                     FtpUtils.closeFtpClient(FtpUtils.getFTPClient());
                     try {
@@ -95,11 +103,11 @@ public class ThreadUtils extends Thread{
 
         else if (task.equals("download")){
             synchronized (this) {
-                System.out.println("开始下载回执" + new Date());
 
                 while (!close()) {
+                    System.out.println("查找回执文件" + new Date().toString());
                     //回执xml下载
-                    //System.out.println("查找回执文件" + new Date().toString());
+                    logInfo = "查找回执文件" + new Date().toString();
                     ReceiptDeal receiptDeal = new ReceiptDeal();
 
                     receiptDeal.receiptXmlDownload();
@@ -117,12 +125,15 @@ public class ThreadUtils extends Thread{
 
     }
 
-
     public boolean close() {
         return close;
     }
 
     public void setClose(boolean close) {
         this.close = close;
+    }
+
+    public String getLogInfo() {
+        return logInfo;
     }
 }

@@ -1,137 +1,432 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>澳多多物流回执信息列表</title>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>按批次查询订单</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1" name="viewport"/>
+    <meta http-equiv="content-script-type" content="text/javascript">
+    <meta name="format-detection" content="telephone=no"/>
 
-    <!-- 自定义的css样式-->
-    <link href="AdminLTE/css/Add.css" rel="stylesheet">
-    <!-- 第三方的css样式-->
-    <link rel="shortcut icon" href="favicon.ico">
-    <link href="AdminLTE/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
-    <link href="AdminLTE/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
-    <link href="AdminLTE/css/animate.css" rel="stylesheet">
-    <link href="AdminLTE/css/style.css?v=4.1.0" rel="stylesheet">
-    <link rel="stylesheet" href="AdminLTE/js/plugins/layer/skin/layer.css" id="layui_layer_skinlayercss">
+    <link rel="stylesheet" href="resource/css/base.css">
+    <link rel="stylesheet" href="resource/css/jquery-ui.css"/>
+    <link rel="stylesheet" href="resource/css/jedate.css">
+
+    <script type="text/javascript" src="resource/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="resource/js/page.js"></script>
+    <script type="text/javascript" src="resource/js/common.js"></script>
+    <script type="text/javascript" src="resource/js/mohuchaxun.js"></script>
+    <script type="text/javascript" src="resource/js/jquery.jedate.js"></script>
+
+    <script>
+
+        jQuery(function () {
+            GetReceipts(1);
+        });
+
+
+        function getFuzzBatchNos() {
+            var fuzzyBatchNo;
+            if (jQuery('#batch').val() != '') {
+                fuzzyBatchNo = jQuery('#batch').val();
+            }
+
+            jQuery.ajax2({
+                url: '/AddReceipt/receiptHandle?action=batchNos',
+                data: {fuzzyBatchNo: fuzzyBatchNo},
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200) {
+                        if (data.result.code == 1) {
+                            //console.log("批次列表" + data.result.result);
+                            var resultObj = data.result;
+
+                            if (resultObj.result.length > 0) {
+                                jQuery('#batchNo').empty();
+                                jQuery('#auto').show();
+                                //模糊查询
+                                var autoComplete = new AutoComplete('batch', 'auto', data.result.result);
+                                autoComplete.start(event);
+                            }
+                        } else {
+                            alert(data.result.description)
+                        }
+                    } else {
+                        alert("服务器出问题啦");
+                    }
+                }
+            });
+        }
+
+        batchNoList = [];
+        function getLatestBatchNos() {
+
+            jQuery('#auto').hide();
+            if (batchNoList.length > 0) {
+                return;
+            }
+            jQuery.ajax2({
+                url: '/AddReceipt/receiptHandle?action=batchNos',
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200) {
+                        if (data.result.code == 1) {
+
+                            var resultObj = data.result;
+
+                            if (resultObj.result.length > 0) {
+                                batchNoList = resultObj.result;
+                                jQuery('#batchNo').empty();
+                                var bacthNo_list = "";
+
+                                jQuery.each(resultObj.result, function (i, item) {
+                                    bacthNo_list += '<option value="' + item + '">' + item + '</option>'
+                                });
+                                jQuery('#batchNo').append(bacthNo_list);
+
+                            } else {
+                                jQuery('#batchNo').empty();
+                                alert("查询到的数量为0")
+                            }
+                        } else {
+                            alert(data.result.description)
+                        }
+                    } else {
+                        alert("服务器出问题啦");
+                    }
+                }
+            });
+
+        }
+        ;
+
+        requestCount = 0;
+        lastPageSize = 20;
+
+        function GetReceipts(currentPage) {
+            console.log("当前获取第：" + currentPage + "页的数据");
+
+            var batchNo;
+            if (jQuery('#batch').val() != '') {
+                batchNo = jQuery('#batch').val();
+            }
+            var startTime;
+            if (jQuery("#startTime").val() != '') {
+                startTime = jQuery("#startTime").val();
+            }
+            var endTime;
+            if (jQuery("#endTime").val() != '') {
+                endTime = jQuery("#endTime").val();
+            }
+            var intervalTime;
+            if (jQuery("#intervalTime").val() && jQuery("#timeUnit").val() && jQuery("#timeUnit").val() !== '请选择单位') {
+                intervalTime = jQuery("#intervalTime").val() + ':' + jQuery("#timeUnit").val();
+            }
+
+            var status = jQuery("#status").val();
+
+            var pageSize = jQuery("#pageSize").val();
+
+            if (currentPage == 1 || lastPageSize != pageSize) {
+                console.log("修改了每页显示的数量");
+                requestCount = 0;
+            }
+            lastPageSize = pageSize;
+
+            console.log('批次号：' + batchNo + '===' + '当前页：' + currentPage + '===' + '每页个数：' + pageSize + '===' + '状态：' + status + '===' + '间隔时间：' + intervalTime + '===' + '开始时间：' + startTime + '===' + '结束时间：' + endTime + '===');
+
+            jQuery.ajax2({
+                url: '/AddReceipt/receiptHandle?action=receipts',
+                data: {
+                    batchNo: batchNo,
+                    startTime: startTime,
+                    endTime: endTime,
+                    intervalTime: intervalTime,
+                    status: status,
+                    pageSize: pageSize,
+                    currentPage: currentPage
+                },
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+
+                    if (data.code == 200) {
+                        if (data.result.code == 1) {
+
+                            var receiptObj = data.result;
+
+                            if (requestCount === 0 || lastPageSize != pageSize) {
+                                jQuery("#page").attr("pagelistcount", pageSize);
+                                jQuery("#page").initPage(receiptObj.totalRecord, 1, GG.kk);
+                            }
+
+                            requestCount++;
+
+                            if (receiptObj.result.length > 0) {
+                                jQuery('.pageHandleArea p').text('总记录：' + receiptObj.totalRecord + '   总页数：' + Math.ceil(receiptObj.totalRecord / pageSize));
+
+                                console.log(receiptObj.totalRecord);
+
+                                jQuery('.cont').empty();
+
+                                var receipt_list = "";
+
+                                jQuery.each(receiptObj.result, function (i, item) {
+                                    var uploadTime = format(item.uploadTime);
+
+                                    receipt_list += '<ul>';
+                                    receipt_list += '<li class="n-order"><label>' + item.orderNo + '</label><i>|</i></li>';
+                                    receipt_list += '<li class="n-ebp"><label>' + item.ebpCode + '</label><i>|</i></li>';
+                                    receipt_list += '<li class="n-ebc"><label>' + item.ebcCode + '</label><i>|</i></li>';
+                                    receipt_list += '<li class="n-status"><label>' + item.returnStatus + '</label><i>|</i></li>';
+                                    receipt_list += '<li class="n-time"><label>' + item.returnTime + '</label><i>|</i></li>';
+                                    receipt_list += '<li class="n-content"><label>' + item.returnInfo + '</label><i>|</i></li>';
+                                    receipt_list += '<li class="n-upload"><label>' + uploadTime + '</label><i>|</i></li>';
+                                    receipt_list += '<li class="n-operate"><label class="chakan" onclick="getDetail(' + item.orderNo + ')">查看</label></li>';
+                                    receipt_list += '</ul>';
+                                })
+                                jQuery('.cont').append(receipt_list);
+                            } else {
+                                jQuery('.pageHandleArea p').text('');
+                                jQuery('.cont').empty();
+                                alert("查询到的数量为0")
+                            }
+                        } else {
+                            jQuery('.pageHandleArea p').text('');
+                            alert(data.result.description)
+                        }
+                    } else {
+                        jQuery('.pageHandleArea p').text('');
+                        alert("服务器出问题啦");
+                    }
+                }
+            })
+        }
+
+
+    </script>
 
 </head>
-<body  class="hold-transition skin-blue sidebar-mini">
-<div class="wrapper">
-
-    <div class="col-sm-12">
-
-        <div class="input-group col-sm-4">
-            <input type="text" class="form-control"> <span class="input-group-btn"> <button type="button" class="btn btn-primary">批次号搜索
-                                        </button> </span>
-        </div>
-
-        <div class="input-group col-sm-4">
-            <input type="text" class="form-control">
-
-            <div class="input-group-btn">
-                <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button" aria-expanded="false">时间单位<span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu pull-right">
-                    <li><a href="index.html#">月</a>
-                    </li>
-                    <li><a href="index.html#">日</a>
-                    </li>
-                    <li><a href="index.html#">天</a>
-                    </li>
-                    <li><a href="index.html#">时</a>
-                    </li>
-                    <li><a href="index.html#">分</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
 
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label">图标触发日期：</label>
-            <div class="col-sm-10">
-                <input placeholder="开始日期" class="form-control layer-date" id="start">
-                <input placeholder="结束日期" class="form-control layer-date" id="end">
-            </div>
-        </div>
+<body>
+<div id="pc-main">
+    <!-- 加载动画 -->
+    <img id="progressImgage" class="progress hide" alt="" src="resource/images/loading.gif"/>
+    <div id="maskOfProgressImage" class="mask hide"></div>
 
+    <div class="top">
+        <ul>
+            <li>
+                <label class="fl">输入批次号:&nbsp;</label>
+                <div class="pch fl">
+				<span>
+					<select id="batchNo" onchange="this.parentNode.nextSibling.value = this.value"
+                            onclick="getLatestBatchNos()">
+					</select>
 
-    </div>
-
-    <div class="col-sm-12">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>回执信息列表</h5>
-                <div class="ibox-tools">
-                    <a class="collapse-link">
-                        <i class="fa fa-chevron-up"></i>
-                    </a>
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="table_basic.html#">
-                        <i class="fa fa-wrench"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="table_basic.html#">选项1</a>
-                        </li>
-                        <li><a href="table_basic.html#">选项2</a>
-                        </li>
-                    </ul>
-                    <a class="close-link">
-                        <i class="fa fa-times"></i>
-                    </a>
+				</span><input id="batch" type="text" placeholder="请输入批次号" onkeyup="getFuzzBatchNos()">
+                    <div class="auto_hidden" id="auto"><!--自动完成 DIV--></div>
                 </div>
-            </div>
-            <div class="ibox-content">
 
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>订单号</th>
-                        <th>ebcCode</th>
-                        <th>ebpCode</th>
-                        <th>状态</th>
-                        <th>回执信息</th>
-                        <th>回执时间</th>
-                        <th>插入时间</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>张三</td>
-                        <td>男</td>
-                        <td>23</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>李四</td>
-                        <td>男</td>
-                        <td>27</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>王麻子</td>
-                        <td>男</td>
-                        <td>65</td>
-                    </tr>
-                    </tbody>
-                </table>
-
-            </div>
+            </li>
+            <li>
+                <label>回执时间段:&nbsp;</label>
+                <span>
+		  <input class="datainp wicon" id="startTime" type="text" placeholder="开始时间" value="" readonly>
+	  </span>
+                <label>&nbsp;至&nbsp;</label>
+                <span>
+		  <input class="datainp wicon" id="endTime" type="text" placeholder="结束时间" readonly/>
+	  </span>
+            </li>
+            <li>
+                <label>间隔时间段:&nbsp;</label>
+                <span>
+	    <input id="intervalTime" name="" type="text" placeholder="请填写时间" class="intervalTime" style="width: 100px;"/>
+	    </span>
+                <select id="timeUnit">
+                    <option selected="selected" value="">请选择单位</option>
+                    <option value="m">分钟</option>
+                    <option value="h">小时</option>
+                    <option value="d">天</option>
+                </select>
+            </li>
+            <li>
+                <label>请选择状态:</label>
+                <select id="status">
+                    <option value="-1" selected="selected">失败</option>
+                    <option value="1">成功</option>
+                    <option value="0">全部</option>
+                </select>
+            </li>
+            <li>
+                <input type="button" name="" class="chaxun" onclick="GetReceipts(1)" value="查询"
+                       style="width: 60px; text-align: center;"/>
+            </li>
+        </ul>
+    </div>
+    <div class="ui-helper-clearfix"></div>
+    <!-- list头 -->
+    <div class="nav">
+        <ul>
+            <li class="n-order">
+                <label>订单号</label>
+                <i>|</i>
+            </li>
+            <li class="n-ebp">
+                <label>ebpCode</label>
+                <i>|</i>
+            </li>
+            <li class="n-ebc">
+                <label>ebcCode</label>
+                <i>|</i>
+            </li>
+            <li class="n-status">
+                <label>状态</label>
+                <i>|</i>
+            </li>
+            <li class="n-time">
+                <label>回复时间</label>
+                <i>|</i>
+            </li>
+            <li class="n-content">
+                <label>回复内容</label>
+                <i>|</i>
+            </li>
+            <li class="n-upload">
+                <label>上传时间</label>
+                <i>|</i>
+            </li>
+            <li class="n-operate">
+                <label>操作</label>
+            </li>
+        </ul>
+    </div>
+    <div class="clear"></div>
+    <!-- list展示 -->
+    <div class="content">
+        <div class="cont">
+            <ul>
+            </ul>
         </div>
     </div>
-
-
+    <!-- pageSize -->
+    <div class="pageHandleArea">
+        <ul>
+            <li>
+                <label>请选择每页个数</label>
+                <select id="pageSize" onchange="GetReceipts(1)">
+                    <option value="20" selected="selected">20</option>
+                    <option value="40">40</option>
+                    <option value="60">60</option>
+                </select>
+            </li>
+        </ul>
+        <p></p>
+    </div>
+    <!-- 分页 -->
+    <ul class="page" maxshowpageitem="5" pagelistcount="10" id="page"></ul>
 
 </div>
 
-<script src="AdminLTE/js/jquery.min.js?v=2.1.4"></script>
-<script src="AdminLTE/js/bootstrap.min.js?v=3.3.6"></script>
-<script src="AdminLTE/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="AdminLTE/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-<script src="AdminLTE/js/plugins/layer/layer.min.js"></script>
-<script src="AdminLTE/js/hAdmin.js?v=4.1.0"></script>
-<script type="text/javascript" src="AdminLTE/js/index.js"></script>
-<script src="AdminLTE/js/plugins/pace/pace.min.js"></script>
+<!-- 点击查看详情 -->
+<div class="theme-popover">
+    <div class="theme-poptit">
+        <a title="关闭" class="close" onclick="closeDetail()">×</a>
+        <h3>订单号</h3>
+    </div>
+    <div class="t-nav">
+        <ul>
+            <li class="t-status">
+                <label>状态</label>
+                <i>|</i>
+            </li>
+            <li class="t-time">
+                <label>回复时间</label>
+                <i>|</i>
+            </li>
+            <li class="t-content">
+                <label>回复内容</label>
+                <i>|</i>
+            </li>
+            <li class="t-upload">
+                <label>上传时间</label>
+            </li>
+        </ul>
+    </div>
+    <div class="theme-popbod">
+    </div>
+</div>
+</div>
+<div class="theme-popover-mask"></div>
+
+
+<!-- 日期选择 -->
+<script type="text/javascript">
+
+    var opts = jQuery.extend({
+        type: "je",
+        minDate: undefined,
+        maxDate: undefined
+    }, opts);
+    if (opts.type == "je") {
+        jQuery("#optsdate").jeDate({
+            isinitVal: true,
+            festival: true,
+            ishmsVal: false,
+            minDate: opts.minDate,
+            maxDate: opts.maxDate,
+            format: "YYYY-MM-DD hh:mm",
+            zIndex: 3000
+        })
+    }
+    var start = {
+        format: 'YYYY-MM-DD hh:mm:ss',
+        minDate: '1990-06-16 23:59:59', //设定最小日期为当前日期
+        festival: true,
+        //isinitVal:true,
+        maxDate: jQuery.nowDate(0), //最大日期
+        choosefun: function (elem, datas) {
+            end.minDate = datas; //开始日选好后，重置结束日的最小日期
+        },
+        okfun: function (elem, datas) {
+            alert(datas)
+        }
+    };
+    var end = {
+        format: 'YYYY-MM-DD hh:mm:ss',
+        minDate: jQuery.nowDate(0), //设定最小日期为当前日期
+        festival: true,
+        //isinitVal:true,
+        maxDate: '2099-06-16 23:59:59', //最大日期
+        choosefun: function (elem, datas) {
+            start.maxDate = datas; //将结束日的初始值设定为开始日的最大日期
+        }
+    };
+
+    jQuery("#startTime").jeDate(start);
+    jQuery("#endTime").jeDate(end);
+
+    //时间戳转换成字符串
+    function add0(m) {
+        return m < 10 ? '0' + m : m
+    }
+    function format(shijianchuo) {
+        //shijianchuo是整数，否则要parseInt转换
+        var time = new Date(shijianchuo);
+        var y = time.getFullYear();
+        var m = time.getMonth() + 1;
+        var d = time.getDate();
+        var h = time.getHours();
+        var mm = time.getMinutes();
+        var s = time.getSeconds();
+        return y + '-' + add0(m) + '-' + add0(d) + ' ' + add0(h) + ':' + add0(mm) + ':' + add0(s);
+    }
+</script>
+
 
 </body>
 </html>

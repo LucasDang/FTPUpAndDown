@@ -9,7 +9,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>RootServlet</servlet-name>
-        <url-pattern>/receiptsHandle</url-pattern>
+        <url-pattern>/receiptHandle</url-pattern>
     </servlet-mapping>
 
     <servlet>

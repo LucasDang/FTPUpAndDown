@@ -29,7 +29,7 @@
     </select>
 
     <select id="getBatchNosByFuzzy" parameterType="java.lang.String" resultType="java.lang.String">
-        SELECT BatchNumber FROM shop_Orders WHERE BatchNumber LIKE concat(concat('%',#{fuzzyBatchNo}),'%') group by BatchNumber  order BY BatchNumber;
+        SELECT BatchNumber FROM shop_Orders WHERE BatchNumber LIKE #{fuzzyBatchNo} group by BatchNumber  order BY BatchNumber;
     </select>
 
 <!--

@@ -45,7 +45,6 @@ public class ReceiptDeal {
                 i++;
             } catch (UnsupportedEncodingException e) {
                 logger.error("下载回执所设置的路径错误");
-                e.printStackTrace();
             }
         }
 
@@ -72,7 +71,6 @@ public class ReceiptDeal {
             if (fileNames.length == 1){
                 if (!firstStr.equals("xml")){
                     logger.info("ftp上面只有一个隐藏文件了" + new Date());
-
                     return ;
                 }
             }
@@ -83,7 +81,7 @@ public class ReceiptDeal {
 
             int downloadNum = fileNames.length<limitDownloadNum?fileNames.length:limitDownloadNum;
 
-            logger.info("ftp上有回执文件，个数为===" + fileNames.length + "===下载其中最后的===" + downloadNum + "===个===" + new Date());
+            //logger.info("ftp上有回执文件，个数为===" + fileNames.length + "===下载其中最后的===" + downloadNum + "===个===" + new Date());
 
             for (int i = 0; i < downloadNum ; i++) {
 
@@ -103,7 +101,7 @@ public class ReceiptDeal {
             //关闭连接
             FtpUtils.closeFtpClient(ftpClient);
 
-            logger.info("下载了===" + downloadNum + "===个回执完成===" + new Date());
+            //logger.info("下载了===" + downloadNum + "===个回执完成===" + new Date());
 
             //进行解析
             receiptXmlParse(fileNames);
@@ -138,7 +136,7 @@ public class ReceiptDeal {
 
 
         int downloadNum = fileNames.length<limitDownloadNum?fileNames.length:limitDownloadNum;
-        logger.info("开始解析===" + downloadNum + "===个回执文件===" + new Date());
+        //logger.info("开始解析===" + downloadNum + "===个回执文件===" + new Date());
 
         for (int i=0;i<downloadNum;i++) {
             String realName=fileNames[i].substring(fileNames[i].lastIndexOf("/")+1);
@@ -175,7 +173,7 @@ public class ReceiptDeal {
 
         if(receipts.size() > 0) {
 
-            logger.info("完成解析===" + receipts.size() + "===个回执文件===" + new Date());
+            //logger.info("完成解析===" + receipts.size() + "===个回执文件===" + new Date());
 
             ReceiptMapperImp receiptMapperImp = new ReceiptMapperImp();
             receiptMapperImp.add(receipts);
@@ -195,8 +193,6 @@ public class ReceiptDeal {
             }
         }
 
-        logger.info("移动temp文件完成===" + new Date());
-
         FtpUtils.closeFtpClient(ftpClient);
     }
 
@@ -209,13 +205,10 @@ public class ReceiptDeal {
         if (beforeFiles != null && beforeFiles.length > 0){
             String firstStr=beforeFiles[0].substring(beforeFiles[0].lastIndexOf(".")+1);
             if (beforeFiles.length == 1 && !firstStr.equals("xml")){
-                    System.out.println("该文件下只存在一个隐藏文件");
+                    //System.out.println("该文件下只存在一个隐藏文件");
                     return;
             }else {
-                //String str=beforeFiles[1].substring(beforeFiles[1].lastIndexOf(".")+1);
-                //if (str.equals("xml")) {
-                //进行解析
-                    logger.info("temp文件夹有文件，个数为===" + beforeFiles.length + "===解析其中最后的===" + limitDownloadNum + "===个===" + new Date());
+                    //logger.info("temp文件夹有文件，个数为===" + beforeFiles.length + "===解析其中最后的===" + limitDownloadNum + "===个===" + new Date());
                     //进行解析
                     receiptXmlParse(beforeFiles);
 

@@ -92,7 +92,6 @@ public  class  FileUtils  {
      */
 
     public static String[] getFileNames(String folderPath) {
-
         File file = new File(folderPath);
         return file.list();
     }

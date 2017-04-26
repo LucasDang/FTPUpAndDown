@@ -1,0 +1,228 @@
+@charset "utf-8";
+
+
+/*开关的css*/
+[class|=switch] {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 30px;
+    border-radius: 16px;
+    line-height: 32px;
+    -webkit-tap-highlight-color:rgba(255,255,255,0);
+}
+.switch-on {
+    border: 1px solid white;
+    box-shadow: white 0px 0px 0px 16px inset;
+    transition: border 0.4s, box-shadow 0.2s, background-color 1.2s;
+    background-color: white;
+    cursor: pointer;
+}
+.slider {
+    position: absolute;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    left: 0;
+    top: 0;
+}
+.switch-on .slider {
+    left: 20px;
+    transition: background-color 0.4s, left 0.2s;
+}
+.switch-off {
+    border: 1px solid #dfdfdf;
+    transition: border 0.4s, box-shadow 0.4s;
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset;
+    background-color: rgb(255, 255, 255);
+    cursor: pointer;
+}
+.switch-off .slider {
+    left: 0;
+    transition: background-color 0.4s, left 0.2s;
+}
+.switch-on.switch-disabled{
+    opacity:.5;
+    cursor:auto;
+}
+.switch-off.switch-disabled{
+    background-color:#F0F0F0 !important;
+    cursor:auto;
+}
+
+/*页面基本css*/
+
+* {
+    margin: 0;
+    padding: 0;
+}
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+button,
+textarea,
+p,
+blockquote,
+th,
+td {
+    font-family: '微软雅黑', arial;
+    margin: 0;
+    padding: 0;
+    outline:none;
+}
+fieldset,
+img {
+    border: 0;
+    display:block;
+}
+a {
+    cursor: pointer;
+    text-decoration: none;
+    color: #454545;
+}
+a:focus {
+    outline: 0;
+}
+i,
+em {
+    font-style: normal;
+}
+select,
+input,
+button {
+    font-family: inherit;
+    font-size: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+}
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+select {
+    -webkit-appearance: none;
+    appearance: none;
+}
+textarea {
+    -webkit-appearance: none;
+    appearance: none;
+}
+ol,
+ul,
+li {
+    list-style: none;
+}
+table {
+    text-align: left;
+    font-family: Arial, Helvetica, sans-serif;
+}
+:link,
+:visited,
+ins {
+    text-decoration: none;
+}
+blockquote,
+q {
+    quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: none;
+}
+input,
+img,
+select,
+button {
+    vertical-align: middle;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: normal;
+}
+code,
+kbd,
+samp,
+tt,
+input,
+button,
+textarea,
+select {
+    font-size: 100%;
+}
+body{
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    font-family:"微软雅黑";
+}
+article,aside,dialog,footer,header,section,nav,figure,menu{display:block}
+html{
+    font-size:14px;
+}
+h1{
+    text-align: center;
+    line-height: 100px;
+    border-bottom: 1px dotted #a7a6aa;
+}
+.common-row {
+    width: 100%;
+    height: 80px;
+    border-bottom: 1px solid #a7a6aa;
+}
+.cell-left, .cell-right {
+    width: 45%;
+    height: 100%;
+    float: left;
+    line-height: 40px;
+    text-align: center;
+}
+.llog{
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid #a7a6aa;
+}
+.reload{
+    width: 50px;
+    border: 1px solid #a7a6aa;
+    border-radius: 15px;
+    text-align: center;
+    height: 25px;
+}
+.list{
+    padding: 10px 0;
+}
+.list .cell-left ul, .list .cell-right ul{
+    width: 60%;
+    border-top: 1px solid #a7a6aa;
+    border-left: 1px solid #a7a6aa;
+    border-right: 1px solid #a7a6aa;
+    margin: 0 auto;
+}
+.list .cell-left ul:last-child, .list .cell-right ul:last-child{
+    border-bottom: 1px solid #a7a6aa;
+}

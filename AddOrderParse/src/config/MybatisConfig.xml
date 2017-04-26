@@ -31,9 +31,6 @@
 
     <mappers>
         <mapper resource="com/add/mapper/ReceiptMapper.xml" />
-
-        <mapper resource="com/add/mapper/OrderMapper.xml" />
-
     </mappers>
 
 

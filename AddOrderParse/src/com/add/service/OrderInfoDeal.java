@@ -57,7 +57,7 @@ public class OrderInfoDeal {
                     logger.error("上传订单连接ftp失败");
                     return;
                 }
-                logger.info("开始上传订单文件===" + fileNames.length + "===个");
+                //logger.info("开始上传订单文件===" + fileNames.length + "===个");
 
                 //存在文件，进行上传
                 for (int i=0;i<fileNames.length;i++){

@@ -5,14 +5,14 @@ package com.add.jsonDao;
  */
 public class AbstractJsonObject {
 
-    private String code;
+    private int code;
 
     private String msg;
 
     private Object result;
 
 
-    public AbstractJsonObject(String code,String msg,Object result){
+    public AbstractJsonObject(int code,String msg,Object result){
         super();
         this.code = code;
         this.msg = msg;
@@ -20,11 +20,11 @@ public class AbstractJsonObject {
 
     }
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(int code) {
         this.code = code;
     }
 

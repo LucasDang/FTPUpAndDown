@@ -10,6 +10,8 @@ import com.add.utils.JackJsonUtil;
 import com.add.utils.ResponseUtil;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +31,7 @@ public class RootServlet extends javax.servlet.http.HttpServlet {
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         String action = request.getParameter("action");
 
-        System.out.println("action 为：" + action);
+        System.out.println("action 为：" + action + "---------");
 
         ServiceResult serviceResult = null;
 
@@ -52,7 +54,7 @@ public class RootServlet extends javax.servlet.http.HttpServlet {
             serviceResult = new ServiceResult(ReturnCode.VALIDATION_ERROR,"action参数无效");
         }
 
-        AbstractJsonObject base = new AbstractJsonObject("200","操作成功",serviceResult);
+        AbstractJsonObject base = new AbstractJsonObject(200,"操作成功",serviceResult);
         String responseText = JackJsonUtil.toJson(base);
         System.out.println("json数据" + responseText);
         ResponseUtil.renderJson(response, responseText);
@@ -68,14 +70,15 @@ public class RootServlet extends javax.servlet.http.HttpServlet {
      * 获取批次号,分为模糊查询和根据需要查询批次号
      */
     private ServiceResult getBatchNos(javax.servlet.http.HttpServletRequest request){
-        String fuzzyBatchNo = request.getParameter("fuzzyBatchNo");
+        String fuzzyBatchNo = '%' + request.getParameter("fuzzyBatchNo") + '%';
+
         //根据pageSize获取最近的几个批次
         String pageSize =  request.getParameter("pageSize")==null?"8":request.getParameter("pageSize");
 
         ServiceResult serviceResult;
         String[] batchNos;
 
-        if (fuzzyBatchNo!=null) {
+        if (fuzzyBatchNo!=null && !fuzzyBatchNo.equals("%null%")) {
             ReceiptMapper receiptMapper = new ReceiptMapperImp();
             batchNos = receiptMapper.getBatchNosByFuzzy(fuzzyBatchNo);
         }else {
@@ -116,7 +119,6 @@ public class RootServlet extends javax.servlet.http.HttpServlet {
 
         /**
          * 开始时间 - 结束时间
-         * 如果也有传递间隔时间的参数，这里也会覆盖掉
          */
         String startTime = request.getParameter("startTime");
         String endTime = request.getParameter("endTime");
@@ -127,7 +129,8 @@ public class RootServlet extends javax.servlet.http.HttpServlet {
          */
         String intervalTime = request.getParameter("intervalTime");
         String[] intervalTimes=null;
-        if (intervalTime != null) {
+        if (intervalTime != null && intervalTime != "null") {
+            System.out.println("时间间隔参数为：" + intervalTime);
             intervalTimes = intervalTime.split(":");
         }
         //选择前多久则表明结束时间为当前时间
@@ -136,7 +139,7 @@ public class RootServlet extends javax.servlet.http.HttpServlet {
         Calendar calendar = Calendar.getInstance();
 
 
-        if (intervalTime != null) {
+        if (intervalTime != null && intervalTime != "null") {
             endDate = new Date();
             calendar.setTime(endDate);
 
@@ -159,22 +162,28 @@ public class RootServlet extends javax.servlet.http.HttpServlet {
                 serviceResult = new ServiceResult(ReturnCode.VALIDATION_ERROR, "传入的间隔参数有误");
                 return serviceResult;
             }
-        }else if(startTime != null && endDate != null){
-                if (startTime != null) {
-                    long lt = new Long(endTime);
-                    startDate = new Date(lt);
-                }
-                if (endTime != null) {
-                    long lt = new Long(endTime);
-                    endDate = new Date(lt);
+        }else {
+
+            SimpleDateFormat dataParse =   new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
+            if (startTime != null && endTime != null) {
+
+                try {
+                    startDate = dataParse.parse(startTime);
+                    endDate = dataParse.parse(endTime);
+                } catch (ParseException e) {
+                    serviceResult = new ServiceResult(ReturnCode.NOT_FOUND_OBJECT,"日期格式错误");
+                    return serviceResult;
                 }
 
-        }else {
-            endDate = new Date();
-            calendar.setTime(endDate);
-            calendar.add(Calendar.HOUR_OF_DAY, -1);
-            startDate =  calendar.getTime();
-            endDate = new Date();
+            } else  {
+                if (batchNo == null) {
+                    endDate = new Date();
+                    calendar.setTime(endDate);
+                    calendar.add(Calendar.DAY_OF_MONTH, -1);
+                    startDate = calendar.getTime();
+                    endDate = new Date();
+                }
+            }
         }
 
         /**
